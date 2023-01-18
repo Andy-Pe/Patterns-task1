@@ -1,17 +1,22 @@
 package ru.netology.delivery.test;
 
+import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.netology.delivery.data.DataGenerator;
 
+import java.util.Locale;
+
 import static com.codeborne.selenide.Selenide.open;
 
 class DeliveryTest {
+    private Faker faker;
 
     @BeforeEach
     void setup() {
         open("http://localhost:9999");
+        faker = new Faker(new Locale("ru"));
     }
 
     @Test
