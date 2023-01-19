@@ -6,6 +6,7 @@ import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
+import ru.netology.delivery.data.DataGenerator;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -29,10 +30,10 @@ class DeliveryTest {
     @Test
     void shouldTestSuccessfulFormSubmission() {
         $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
-        $("[data-test-id=date] input").setValue(planningDate);
-        $("[data-test-id=city] input").setValue(faker.address().city());
-        $("[data-test-id=name] input").setValue(faker.name().fullName());
-        $("[data-test-id=phone] input").setValue(faker.phoneNumber().phoneNumber());
+        $("[data-test-id=date] input").setValue(DataGenerator.generateDate(3));
+        $("[data-test-id=city] input").setValue(DataGenerator.generateCity("ru"));
+        $("[data-test-id=name] input").setValue(DataGenerator.generateName("ru"));
+        $("[data-test-id=phone] input").setValue(DataGenerator.generatePhone("ru"));
         $("[data-test-id=agreement] span").click();
         $x("//*[@class='button__content']").click();
         $("[data-test-id=success-notification]").should(appear, Duration.ofSeconds(15));
@@ -65,10 +66,10 @@ class DeliveryTest {
     @Test
     void shouldTestIfCheckboxIsEmpty() {
         $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
-        $("[data-test-id=date] input").setValue(planningDate);
-        $("[data-test-id=city] input").setValue(faker.address().city());
-        $("[data-test-id=name] input").setValue(faker.name().fullName());
-        $("[data-test-id=phone] input").setValue(faker.phoneNumber().phoneNumber());
+        $("[data-test-id=date] input").setValue(DataGenerator.generateDate(3));
+        $("[data-test-id=city] input").setValue(DataGenerator.generateCity("ru"));
+        $("[data-test-id=name] input").setValue(DataGenerator.generateName("ru"));
+        $("[data-test-id=phone] input").setValue(DataGenerator.generatePhone("ru"));
         $x("//*[@class='button__content']").click();
         $("[data-test-id=agreement].input_invalid .checkbox__text")
                 .shouldHave(Condition.text("Я соглашаюсь с условиями обработки и использования моих персональных данных"))
