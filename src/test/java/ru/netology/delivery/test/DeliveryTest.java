@@ -4,6 +4,7 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 import ru.netology.delivery.data.DataGenerator;
@@ -37,31 +38,34 @@ class DeliveryTest {
         $("[data-test-id=agreement] span").click();
         $x("//*[@class='button__content']").click();
         $("[data-test-id=success-notification]").should(appear, Duration.ofSeconds(15));
-        $x("//*[contains(text(), 'Встреча успешно запланирована')]")
-                .shouldHave(Condition.text("Встреча успешно запланирована на " + planningDate), Duration.ofSeconds(15))
-                .shouldBe(Condition.visible);
+        $x("//*[contains(text(), 'Встреча успешно запланирована')]").shouldHave(Condition.text("Встреча успешно запланирована на " + planningDate), Duration.ofSeconds(15)).shouldBe(Condition.visible);
     }
 
     @Test
-    void shouldTestIfReplanDateMeeting() {
+    @DisplayName("Should replan meeting")
+    void shouldReplanMeeting() {
+        var validUser = DataGenerator.Registration.generateUser("ru");
         var daysToAddForFirstMeeting = 4;
-        var firstMeetingDate = generateDate(daysToAddForFirstMeeting);
+        var firstMeetingDate = DataGenerator.generateDate(daysToAddForFirstMeeting);
         var daysToAddForSecondMeeting = 7;
-        var secondMeetingDate = generateDate(daysToAddForSecondMeeting);
-        $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
+        var secondMeetingDate = DataGenerator.generateDate(daysToAddForSecondMeeting);
+
+        $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(firstMeetingDate);
-        $("[data-test-id=city] input").setValue("Москва");
-        $("[data-test-id=name] input").setValue("Иванов Иван");
-        $("[data-test-id=phone] input").setValue("+79251112233");
+        $("[data-test-id=city] input").setValue(validUser.getCity());
+        $("[data-test-id=name] input").setValue(validUser.getName());
+        $("[data-test-id=phone] input").setValue(validUser.getPhone());
         $("[data-test-id=agreement] span").click();
         $x("//*[@class='button__content']").click();
-        $("[data-test-id=replan-notification]").should(appear, Duration.ofSeconds(15));
-        $x("//*[contains(text(), 'другую дату')]").shouldBe(Condition.visible);
-        $x("//span[contains(text(), 'Перепланировать')]").click();
-        $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
+        $x("//*[contains(text(), 'Встреча успешно запланирована')]").shouldHave(Condition.text("Встреча успешно запланирована на " + firstMeetingDate));
+        $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(secondMeetingDate);
-        $("[data-test-id=success-notification]").shouldBe(visible);
+        $x("//*[@class='button__content']").click();
+        $x("//*[contains(text(), 'У вас уже запланирована встреча на другую дату. Перепланировать?')]").shouldBe(Condition.visible);
+        $x("//span[contains(text(), 'Перепланировать')]").click();
+        $x("//*[contains(text(), 'Встреча успешно запланирована')]").shouldHave(Condition.text("Встреча успешно запланирована на " + secondMeetingDate));
     }
+
 
     @Test
     void shouldTestIfCheckboxIsEmpty() {
@@ -71,8 +75,6 @@ class DeliveryTest {
         $("[data-test-id=name] input").setValue(DataGenerator.generateName("ru"));
         $("[data-test-id=phone] input").setValue(DataGenerator.generatePhone("ru"));
         $x("//*[@class='button__content']").click();
-        $("[data-test-id=agreement].input_invalid .checkbox__text")
-                .shouldHave(Condition.text("Я соглашаюсь с условиями обработки и использования моих персональных данных"))
-                .shouldHave(visible);
+        $("[data-test-id=agreement].input_invalid .checkbox__text").shouldHave(Condition.text("Я соглашаюсь с условиями обработки и использования моих персональных данных")).shouldHave(visible);
     }
 }
