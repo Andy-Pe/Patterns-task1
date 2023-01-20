@@ -44,7 +44,7 @@ public class DataGenerator {
             Faker faker = new Faker(new Locale(locale));
             return new UserInfo(
                     faker.address().city(),
-                    faker.name().fullName(),
+                    faker.name().lastName() + " " + faker.name().firstName(),
                     faker.phoneNumber().phoneNumber()
             );
         }
