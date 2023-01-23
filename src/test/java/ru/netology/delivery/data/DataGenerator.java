@@ -14,8 +14,6 @@ public class DataGenerator {
     private DataGenerator() {
     }
 
-    private Faker faker;
-
     public static String generateDate(int days) {
         return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
